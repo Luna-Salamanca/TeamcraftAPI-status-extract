@@ -76,6 +76,7 @@ class TeamcraftAPI:
 
             raw_data = response.json()
             self.save_to_json({
+                "user_input": status_name,
                 "request_url": full_url,
                 "timestamp": datetime.now().isoformat(),
                 "raw_response": raw_data
