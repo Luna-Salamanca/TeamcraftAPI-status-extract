@@ -1,96 +1,140 @@
-# Teamcraft API Fetcher
+# **Teamcraft API Fetcher**  
 
-## Overview
-This Python script interacts with the FFXIV Teamcraft API to fetch information about status effects (debuffs, buffs, etc.). It allows users to search for a status by name and retrieves relevant data, including ID, type, icon, and description.
+## **Overview**  
+This Python script interacts with the *Final Fantasy XIV Teamcraft API* to fetch information about status effects (buffs, debuffs, etc.). It allows users to search for a status by name and retrieves relevant data such as ID, type, icon, and description.  
 
-## Features
-- Fetches status information from the Teamcraft API
-- Saves API responses in structured directories (`raw`, `processed`, `errors`)
-- Logs important details for debugging and tracking requests
-- Handles API rate limits and exceptions gracefully
+## **Features**  
+✅ Fetches status information from the Teamcraft API  
+✅ Saves API responses in structured directories (`raw_data/`, `processed_data/`)  
+✅ Handles API rate limits and retries automatically  
+✅ Logs requests and responses for debugging  
+✅ Processes and formats retrieved data for easy use  
+✅ Provides a direct *xivapi* link for the status effect icon for easy usage in applications  
 
-## Requirements
-- Python 3.7+
-- The following dependencies:
-  - `requests`
-  - `logging`
-  - `json`
-  - `os`
-  - `time`
-  - `datetime`
+## **Requirements**  
 
-## Install dependencies:
-   ```sh
-   pip install requests
-   ```
+- **Python** `3.7+`  
+- Install dependencies with:  
+  ```sh
+  pip install requests
+  ```
 
-## Usage
-Run the script and input the name of the status you want to search for:
+## **Usage**  
+
+Run the script and enter the status name you want to search for:  
 
 ```sh
 python main.py
 ```
-
-The script will:
-1. Prompt for a status name.
-2. Query the Teamcraft API.
-3. Display the retrieved information.
-4. Save responses to the `api_responses/` directory.
-
-## Example Output
+```sh
+Enter the status name to search: Damage
 ```
-Enter the status name to search: Boiling
-INFO:root:Fetching data from: https://api.ffxivteamcraft.com/search?query=Boiling&type=Status
-INFO:root:Type: Debuff
-INFO:root:Status ID: 12345
-INFO:root:Icon: 215459
-INFO:root:Name: Boiling
-INFO:root:API Path: https://xivapi.com/i/215000/215459.png
-INFO:root:Description: Increases damage taken.
+
+The script will:  
+1. Query the Teamcraft API  
+2. Display the retrieved status information  
+3. Save API responses in structured JSON format  
+
+### **Example Output:**  
+
 ```
-## Raw Output
+INFO: Searching for status: Damage
+INFO: Fetching data from: https://api.ffxivteamcraft.com/search?query=Damage&type=Status
+INFO: Status ID: 61
+INFO: Type: Status
+INFO: Name: Damage Up
+INFO: Icon: 215519
+INFO: API Path: https://xivapi.com/i/215000/215519.png
+INFO: Description: Damage dealt is increased.
+INFO: Data saved successfully.
+```
+
+---
+
+## **Data Structure**  
+
+### **Raw API Response (`raw/` directory)**  
+- Able to see all queries made with the user input
 ```json
-    "request_url": "https://api.ffxivteamcraft.com//search?query=boiling&type=Status",
-    "timestamp": "2025-03-26T05:49:03.906864",
+{
+    "user_input": "Damage",
+    "request_url": "https://api.ffxivteamcraft.com/search?query=Damage&type=Status",
+    "timestamp": "2025-03-26T17:55:36.662413",
     "raw_response": [
         {
-            "en": "Boiling",
-            "de": "Nagende Hitze",
-            "ja": "徐々にヒート",
-            "fr": "Chaleur graduelle",
-            "ko": "서서히 열병",
-            "zh": "逐渐升温",
-            "id": "2898",
-            "icon": "/i/215000/215459.png",
+            "en": "Damage Up",
+            "de": "Schaden +",
+            "ja": "ダメージ上昇",
+            "fr": "Bonus de dégâts",
+            "ko": "주는 피해량 증가",
+            "zh": "伤害提高",
+            "id": "61",
+            "icon": "/i/215000/215519.png",
             "description": {
-                "en": "Body is slowly heating up. Will become <span style=\"color:#ffffff\">Pyretic</span> when this effect expires.",
-                "de": "Nach Ablauf der Wirkungsdauer tritt der Status <span style=\"color:#ffffff\">Pyretisch</span> ein.",
-                "ja": "徐々に熱せられつつある状態。効果終了時にヒート状態になる。",
-                "fr": "Le corps chauffe petit à petit. Lorsque l'effet prend fin, la victime subit Chaleur.",
-                "ko": "서서히 열이 오르는 상태. 효과가 끝날 때 열병 상태가 된다.",
-                "zh": "逐渐变热，效果结束时会陷入过热状态"
+                "en": "Damage dealt is increased.",
+                "de": "Ausgeteilter Schaden ist erhöht.",
+                "ja": "与ダメージが上昇した状態。",
+                "fr": "Les dégâts infligés sont augmentés.",
+                "ko": "적에게 주는 피해량이 증가하는 상태.",
+                "zh": "攻击所造成的伤害提高"
             },
             "type": "Status"
+        },
+        {
+            "en": "Damage Down",
+            "de": "Schaden -",
+            "ja": "ダメージ低下",
+            "fr": "Malus de dégâts",
+            "ko": "주는 피해량 감소",
+            "zh": "伤害降低",
+            "id": "62",
+            "icon": "/i/215000/215520.png",
+            "description": {
+                "en": "Damage dealt is reduced.",
+                "de": "Ausgeteilter Schaden ist verringert.",
+                "ja": "与ダメージが低下した状態。",
+                "fr": "Les dégâts infligés sont réduits.",
+                "ko": "적에게 주는 피해량이 감소하는 상태.",
+                "zh": "攻击所造成的伤害降低"
+            },
+            "type": "Status"
+        }
+        // More entries exist here...
+    ]
+}
 ```
 
-## Processed Output
+### **Processed Data (`processed/` directory)**  
+
 ```json
 {
     "processed_data": {
-        "name": "Boiling",
-        "icon": "215459",
+        "name": "Damage Up",
+        "icon": "215519",
         "type": "Status",
-        "id": "2898",
-        "api_path": "https://xivapi.com/i/215000/215459.png",
-        "description": "Body is slowly heating up. Will become <span style=\"color:#ffffff\">Pyretic</span> when this effect expires."
+        "id": "61",
+        "api_path": "https://xivapi.com/i/215000/215519.png",
+        "description": "Damage dealt is increased."
     }
 }
 ```
 
-## License
+### **Icon Usage with XIVAPI**  
 
-This project is open-source under the MIT License.
+The `icon` field in the API response provides a path like `/i/215000/215519.png`. You can use this to get the full URL of the icon by appending it to `https://xivapi.com`, resulting in:  
 
-## Contributions
-Feel free to submit issues or pull requests to improve functionality.
+```
+https://xivapi.com/i/215000/215519.png
+```
 
+This URL can be used directly in applications to display the status effect's icon.  
+
+---
+
+## **Contributing**  
+Contributions are welcome! Feel free to submit an issue or pull request to improve functionality.  
+
+## **License**  
+This project is open-source under the **MIT License**.  
+
+---
