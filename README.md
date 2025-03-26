@@ -5,7 +5,7 @@ This Python script interacts with the *Final Fantasy XIV Teamcraft API* to fetch
 
 ## **Features**  
 ✅ Fetches status information from the Teamcraft API  
-✅ Saves API responses in structured directories (`raw_data/`, `processed_data/`)  
+✅ Saves API responses in structured directories (`raw/`, `processed/`)  
 ✅ Handles API rate limits and retries automatically  
 ✅ Logs requests and responses for debugging  
 ✅ Processes and formats retrieved data for easy use  
