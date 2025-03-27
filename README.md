@@ -1,60 +1,80 @@
-# **Teamcraft API Fetcher**  
+# **Teamcraft API Fetcher**
 
-## **Overview**  
-This Python script interacts with the *Final Fantasy XIV Teamcraft API* to fetch information about status effects (buffs, debuffs, etc.). It allows users to search for a status by name and retrieves relevant data such as ID, type, icon, and description.  
+## **Overview**
+This Python script interacts with the *Teamcraft API* to fetch information about status effects (buffs, debuffs, etc.) — and now also Actions if the status isn't found. It saves structured responses locally.
 
-## **Features**  
-✅ Fetches status information from the Teamcraft API  
-✅ Saves API responses in structured directories (`raw/`, `processed/`)  
-✅ Handles API rate limits and retries automatically  
-✅ Logs requests and responses for debugging  
-✅ Processes and formats retrieved data for easy use  
-✅ Provides a direct *xivapi* link for the status effect icon for easy usage in applications  
+---
 
-## **Requirements**  
+## **Features**
 
-- **Python** `3.7+`  
-- Install dependencies with:  
+✅ Fetches **Status** info from the Teamcraft API  
+✅ Automatically falls back to **Action** if Status is not found  
+✅ Saves responses in structured folders (`raw/`, `processed/`, `errors/`, `batch/`)  
+✅ Provides **xivapi** icon URL for easy embedding  
+✅ Optional **quiet mode** for clean batch processing  
+✅ Uses `pathlib` and sanitized filenames for better cross-platform support  
+
+---
+
+## **Requirements**
+
+- **Python** `3.7+`
+- Install dependencies:
   ```sh
   pip install requests
   ```
 
-## **Usage**  
+---
 
-Run the script and enter the status name you want to search for:  
+## **Usage**
+
+### 🔹 Single Lookup
 
 ```sh
 python main.py
+# Enter: 1
+# Then: Enter a status or action name like "Weakness" or "Interject"
 ```
+
+### 🔹 Batch Lookup
+
 ```sh
-Enter the status name to search: Damage
+python main.py
+# Enter: 2
+# Then: Enter the path to a list file (e.g., status_list.txt)
 ```
 
-The script will:  
-1. Query the Teamcraft API  
-2. Display the retrieved status information  
-3. Save API responses in structured JSON format  
+Batch mode supports a quiet terminal experience and logs results in a summary file under `api_responses/batch`.
 
-### **Example Output:**  
+---
+
+## **Example CLI Output**
 
 ```
-INFO: Searching for status: Damage
-INFO: Fetching data from: https://api.ffxivteamcraft.com/search?query=Damage&type=Status
-INFO: Status ID: 61
-INFO: Type: Status
-INFO: Name: Damage Up
-INFO: Icon: 215519
-INFO: API Path: https://xivapi.com/i/215000/215519.png
-INFO: Description: Damage dealt is increased.
-INFO: Data saved successfully.
+INFO: Searching for status: Interject
+INFO: Not found as Status — trying Action instead...
+INFO: Found as action: Interject
+INFO: Data saved to: api_responses/processed/000808_hr1_Interject_7538.json
 ```
 
 ---
 
-## **Data Structure**  
+## **Directory Structure**
 
-### **Raw API Response (`raw/` directory)**  
-- Able to see all queries made with the user input
+```
+api_responses/
+├── raw/        ← full API responses
+├── processed/  ← cleaned status/action data
+├── errors/     ← failed lookups or exceptions
+└── batch/      ← batch run summaries
+```
+
+---
+
+## **Example Outputs**
+
+### 🔸 Raw API Response (`raw/`)
+
 ```json
 {
     "user_input": "Damage",
@@ -104,37 +124,63 @@ INFO: Data saved successfully.
 }
 ```
 
-### **Processed Data (`processed/` directory)**  
+### 🔸 Processed Output (`processed/`)
 
 ```json
 {
-    "processed_data": {
-        "name": "Damage Up",
-        "icon": "215519",
-        "type": "Status",
-        "id": "61",
-        "api_path": "https://xivapi.com/i/215000/215519.png",
-        "description": "Damage dealt is increased."
-    }
+  "processed_data": {
+    "name": "Damage Up",
+    "icon": "215519",
+    "type": "Status",
+    "id": "61",
+    "api_path": "https://xivapi.com/i/215000/215519.png",
+    "description": "Damage dealt is increased."
+  }
 }
 ```
 
-### **Icon Usage with XIVAPI**  
+---
 
-The `icon` field in the API response provides a path like `/i/215000/215519.png`. You can use this to get the full URL of the icon by appending it to `https://xivapi.com`, resulting in:  
+## **Using the Icon URLs**
+
+The processed `api_path` field gives you a usable image URL from XIVapi:
 
 ```
 https://xivapi.com/i/215000/215519.png
 ```
 
-This URL can be used directly in applications to display the status effect's icon.  
+You can use this directly in frontends, bots, or reports.
 
 ---
 
-## **Contributing**  
-Contributions are welcome! Feel free to submit an issue or pull request to improve functionality.  
+## **status_list.txt Format**
 
-## **License**  
-This project is open-source under the **MIT License**.  
+Each line should be one status or action name. Example:
+```
+Damage Up
+Down for the Count
+Interject
+Magic Vulnerability Up
+```
+
+Lines starting with `//` or empty lines will be ignored.
 
 ---
+
+## **Contributing**
+
+Contributions are welcome! Feel free to:
+- Open issues for bugs or feature ideas
+- Submit a pull request with enhancements
+
+---
+
+## **License**
+
+MIT License — free to use, modify, and distribute.
+
+---
+
+## **Author**
+
+[Luna](https://github.com/Luna-Salamanca)
