@@ -1,0 +1,113 @@
+//Phase 1:
+
+Down for the Count
+Magic Vulnerability Up
+Damage Down
+interject
+Head Graze
+Burning Chain
+Fire Resistance Down II
+Planar Imprisonment
+Light Resistance Down
+Skyblind
+HP Recovery Down
+
+
+//Phase 2:
+
+Lightning Resistance Down II
+Stun
+Damage Down
+Physical Vulnerability Up
+Magic Vulnerability Up
+Heavy
+Down for the Count
+Slashing Resistance Down
+Hysteria
+Prey
+Ice Resistance Down II
+Frostbite
+Burns
+Surecast
+Arm's Length
+Sprint
+
+//Phase 3:
+
+First in Line
+Second in Line
+Third in Line
+Fire Resistance Down II
+Physical Vulnerability Up
+High Jump Target
+Elusive Jump Target
+Spineshatter Dive Target
+Damage Down
+
+//Phase 4:
+
+Soul of Friendship
+Soul of Devotion
+Bleed
+Bound and Determined
+Clawbound
+Fangbound
+Fire Resistance Down II
+Piercing Resistance Down
+
+//Phase 4.5:
+
+Planar Imprisonment
+Light Resistance Down
+Skyblind
+HP Recovery Down
+
+//Phase 5:
+
+Light of Ascalon
+Magic Vulnerability Up
+Thunderstruck
+Paralysis
+Damage Down
+Physical Vulnerability Up
+Burns
+Doom
+HP Recovery Down
+Stun
+Lightning	Resistance Down
+Burning Chains
+Hysteria
+Fire Resistance Down II
+
+//Phase 6:
+
+Fire Resistance Down II
+Boiling
+Pyretic
+Ice Resistance Down II
+Freezing
+Deep Freeze
+Sustained Light Damage
+Sustained Dark Damage
+Mortal Vow
+Suppuration
+Mortal Atonement
+Magic Vulnerability Up
+Damage Down
+Spreading Flames
+Entangled Flames
+Bleed
+Burns
+Frostbite
+
+Damage Up
+Vulnerability Up
+Neurolink
+Solemn Vow
+
+//Phase 7:
+
+Dark Resistance Down
+Light Resistance Down
+Physical Vulnerability Up
+Bleed
