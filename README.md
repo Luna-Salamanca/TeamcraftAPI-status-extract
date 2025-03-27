@@ -1,10 +1,5 @@
 # **Teamcraft API Fetcher**
-# **Teamcraft API Fetcher**
 
-## **Overview**
-This Python script interacts with the *Teamcraft API* to fetch information about status effects (buffs, debuffs, etc.) — and now also Actions if the status isn't found. It saves structured responses locally.
-
----
 ## **Overview**
 This Python script interacts with the *Teamcraft API* to fetch information about status effects (buffs, debuffs, etc.) — and now also Actions if the status isn't found. It saves structured responses locally.
 
@@ -20,22 +15,9 @@ This Python script interacts with the *Teamcraft API* to fetch information about
 ✅ Uses `pathlib` and sanitized filenames for better cross-platform support  
 
 ---
-## **Features**
-
-✅ Fetches **Status** info from the Teamcraft API  
-✅ Automatically falls back to **Action** if Status is not found  
-✅ Saves responses in structured folders (`raw/`, `processed/`, `errors/`, `batch/`)  
-✅ Provides **xivapi** icon URL for easy embedding  
-✅ Optional **quiet mode** for clean batch processing  
-✅ Uses `pathlib` and sanitized filenames for better cross-platform support  
-
----
 
 ## **Requirements**
-## **Requirements**
 
-- **Python** `3.7+`
-- Install dependencies:
 - **Python** `3.7+`
 - Install dependencies:
   ```sh
@@ -45,37 +27,18 @@ This Python script interacts with the *Teamcraft API* to fetch information about
 ---
 
 ## **Usage**
----
 
-## **Usage**
-
-### 🔹 Single Lookup
 ### 🔹 Single Lookup
 
 ```sh
 python main.py
 # Enter: 1
 # Then: Enter a status or action name like "Weakness" or "Interject"
-# Enter: 1
-# Then: Enter a status or action name like "Weakness" or "Interject"
 ```
-
-### 🔹 Batch Lookup
-
 
 ### 🔹 Batch Lookup
 
 ```sh
-python main.py
-# Enter: 2
-# Then: Enter the path to a list file (e.g., status_list.txt)
-```
-
-Batch mode supports a quiet terminal experience and logs results in a summary file under `api_responses/batch`.
-
----
-
-## **Example CLI Output**
 python main.py
 # Enter: 2
 # Then: Enter the path to a list file (e.g., status_list.txt)
@@ -104,29 +67,10 @@ api_responses/
 ├── processed/  ← cleaned status/action data
 ├── errors/     ← failed lookups or exceptions
 └── batch/      ← batch run summaries
-INFO: Searching for status: Interject
-INFO: Not found as Status — trying Action instead...
-INFO: Found as action: Interject
-INFO: Data saved to: api_responses/processed/000808_hr1_Interject_7538.json
 ```
 
 ---
 
-## **Directory Structure**
-
-```
-api_responses/
-├── raw/        ← full API responses
-├── processed/  ← cleaned status/action data
-├── errors/     ← failed lookups or exceptions
-└── batch/      ← batch run summaries
-```
-
----
-
-## **Example Outputs**
-
-### 🔸 Raw API Response (`raw/`)
 ## **Example Outputs**
 
 ### 🔸 Raw API Response (`raw/`)
@@ -181,18 +125,9 @@ api_responses/
 ```
 
 ### 🔸 Processed Output (`processed/`)
-### 🔸 Processed Output (`processed/`)
 
 ```json
 {
-  "processed_data": {
-    "name": "Damage Up",
-    "icon": "215519",
-    "type": "Status",
-    "id": "61",
-    "api_path": "https://xivapi.com/i/215000/215519.png",
-    "description": "Damage dealt is increased."
-  }
   "processed_data": {
     "name": "Damage Up",
     "icon": "215519",
@@ -207,11 +142,7 @@ api_responses/
 ---
 
 ## **Using the Icon URLs**
----
 
-## **Using the Icon URLs**
-
-The processed `api_path` field gives you a usable image URL from XIVapi:
 The processed `api_path` field gives you a usable image URL from XIVapi:
 
 ```
@@ -233,21 +164,6 @@ Magic Vulnerability Up
 ```
 
 Lines starting with `//` or empty lines will be ignored.
-You can use this directly in frontends, bots, or reports.
-
----
-
-## **status_list.txt Format**
-
-Each line should be one status or action name. Example:
-```
-Damage Up
-Down for the Count
-Interject
-Magic Vulnerability Up
-```
-
-Lines starting with `//` or empty lines will be ignored.
 
 ---
 
@@ -258,17 +174,7 @@ Contributions are welcome! Feel free to:
 - Submit a pull request with enhancements
 
 ---
-## **Contributing**
 
-Contributions are welcome! Feel free to:
-- Open issues for bugs or feature ideas
-- Submit a pull request with enhancements
-
----
-
-## **License**
-
-MIT License — free to use, modify, and distribute.
 ## **License**
 
 MIT License — free to use, modify, and distribute.
