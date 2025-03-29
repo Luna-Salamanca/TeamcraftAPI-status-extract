@@ -1,18 +1,17 @@
 from setuptools import setup, find_packages
 
-# Read README for long description
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="teamcraft_api",
+    name="teamcraft-api",
     version="0.1.0",
     author="Luna",
-    author_email="",  # Optional
+    author_email="",
     description="CLI tool to fetch and process FFXIV Teamcraft API data",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/Luna-Salamanca/TeamcraftAPI-status-extract",  # Your repo URL
+    url="https://github.com/Luna-Salamanca/TeamcraftAPI-status-extract",
     packages=find_packages(include=["teamcraft_api", "teamcraft_api.*"]),
     include_package_data=True,
     install_requires=[
@@ -25,6 +24,7 @@ setup(
             "black>=22.0.0",
             "ruff>=0.0.1",
             "build>=0.10.0",
+            "typing-extensions>=4.0.0",
         ],
     },
     entry_points={
@@ -45,7 +45,8 @@ setup(
         "Programming Language :: Python :: 3.11",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
-    python_requires='>=3.7',
+    python_requires=">=3.7",
+    keywords=["ffxiv", "teamcraft", "api", "cli", "xivapi", "json", "game-data"],
     project_urls={
         "Bug Tracker": "https://github.com/Luna-Salamanca/TeamcraftAPI-status-extract/issues",
         "Documentation": "https://github.com/Luna-Salamanca/TeamcraftAPI-status-extract#readme",

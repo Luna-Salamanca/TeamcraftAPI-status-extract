@@ -9,8 +9,13 @@ if "%CMD%"=="test" (
 ) else if "%CMD%"=="clean" (
     echo Cleaning Python cache files...
     for /d /r . %%d in (__pycache__) do @if exist "%%d" rd /s /q "%%d"
+
     echo Cleaning .pyc files...
     del /s /q *.pyc >nul 2>&1
+    echo Cleaning logs folder only if teamcraft.log exists...
+    if exist "logs\\teamcraft.log" (
+    rd /s /q logs)
+
     echo Cleaning build artifacts...
     if exist "htmlcov" rd /s /q htmlcov
     if exist ".pytest_cache" rd /s /q .pytest_cache
@@ -18,6 +23,8 @@ if "%CMD%"=="test" (
     if exist "dist" rd /s /q dist
     if exist "build" rd /s /q build
     if exist "teamcraft_api.egg-info" rd /s /q teamcraft_api.egg-info
+
+
     echo Clean complete!
 ) else if "%CMD%"=="package" (
     python -m build

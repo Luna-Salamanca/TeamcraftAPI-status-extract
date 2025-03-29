@@ -1,6 +1,25 @@
+# 📘 About This Project
+
+This project is part of my personal learning journey into **advanced Python concepts** and **real-world software engineering practices**, including:
+
+- Structuring modular Python projects  
+- Writing unit tests and handling edge cases  
+- Working with external APIs
+- Managing data with file I/O and JSON  
+- Using GitHub for version control, collaboration, and documentation
+
+It serves as a sandbox to improve my skills in:
+- Clean architecture
+- Exception handling
+- Code maintainability
+- Git workflows and pull requests
+
+> I'm using this repository to **learn, iterate, and improve** through hands-on experience.
+
 # 🛠️ Teamcraft API Fetcher
 
 A modular Python CLI tool to fetch, process, and save data from the Teamcraft API.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 ---
@@ -143,7 +162,7 @@ make clean
 ```
 
 > Ensure you have a GNU Makefile if using Linux/macOS. See `make.bat` for equivalent commands.
-
+> Not tested on Linux/macOS yet.
 ---
 
 ## 🧪 Requirements
