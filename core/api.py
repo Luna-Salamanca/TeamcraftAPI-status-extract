@@ -1,0 +1,1 @@
+# TeamcraftAPI only handles HTTP requests and directory creation.
