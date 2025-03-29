@@ -1,3 +1,4 @@
+# teamcraft_api/core/api.py
 import requests
 import json
 import logging
@@ -6,25 +7,24 @@ from urllib.parse import urlencode
 from datetime import datetime
 from time import sleep
 from pathlib import Path
-import traceback
+from teamcraft_api.core.utils import extract_icon_number, format_icon_path
+from teamcraft_api.core.data_saver import save_to_json
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class TeamcraftAPI:
     BASE_URL = "https://api.ffxivteamcraft.com/"
     SEARCH_ENDPOINT = "search"
     TIMEOUT = 10
-    BASE_DIR = Path("api_responses")
-    RAW_DIR = BASE_DIR / "raw"
-    PROCESSED_DIR = BASE_DIR / "processed"
-    ERROR_DIR = BASE_DIR / "errors"
-    BATCH_DIR = BASE_DIR / "batch"
     RATE_LIMIT_DELAY = 0
 
-    def __init__(self, quiet: bool = False):
-        self.base_url = self.BASE_URL
+    def __init__(self, quiet: bool = False, base_dir: Optional[str] = None):
         self.quiet = quiet
+        self.BASE_DIR = Path(base_dir or "api_responses")
+        self.RAW_DIR = self.BASE_DIR / "raw"
+        self.PROCESSED_DIR = self.BASE_DIR / "processed"
+        self.ERROR_DIR = self.BASE_DIR / "errors"
+        self.BATCH_DIR = self.BASE_DIR / "batch"
         self._create_directories()
 
     def _create_directories(self):
@@ -33,49 +33,10 @@ class TeamcraftAPI:
             if not self.quiet:
                 logger.info(f"Ensured directory exists: {directory}")
 
-    def _extract_icon_number(self, icon_path: str) -> str:
-        return icon_path.split('/')[-1].replace('.png', '')
-
-    def _format_icon_path(self, icon_path: str) -> str:
-        clean_path = icon_path.replace('/i/', '').replace('.png', '')
-        return f"https://xivapi.com/i/{clean_path}.png"
-
-    def save_to_json(self, data: Dict[str, Any], status_name: str, data_type: str) -> None:
-        def sanitize_filename(name: str) -> str:
-            name = ' '.join(name.split())
-            invalid_chars = '<>:"/\\|?*\t'
-            for char in invalid_chars:
-                name = name.replace(char, '_')
-            return name
-
-        directory = {
-            'raw': self.RAW_DIR,
-            'processed': self.PROCESSED_DIR,
-            'error': self.ERROR_DIR
-        }.get(data_type, self.ERROR_DIR)
-
-        if data_type == 'processed':
-            icon = data['processed_data']['icon']
-            name = sanitize_filename(data['processed_data']['name'])
-            status_id = data['processed_data']['id']
-            filename = directory / f"{icon}_{name}_{status_id}.json"
-        else:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            safe_status_name = sanitize_filename(status_name)
-            filename = directory / f"{safe_status_name}_{timestamp}.json"
-
-        try:
-            with open(filename, 'w', encoding='utf-8') as f:
-                json.dump(data, f, indent=4, ensure_ascii=False)
-            if not self.quiet:
-                logger.info(f"Saved {data_type} response to: {filename}")
-        except Exception as e:
-            logger.error(f"Error saving JSON to {filename}: {e}", exc_info=True)
-
     def _fetch_api_data(self, query: str, search_type: str) -> Optional[Dict[str, Any]]:
         sleep(self.RATE_LIMIT_DELAY)
         try:
-            search_url = f"{self.base_url}{self.SEARCH_ENDPOINT}"
+            search_url = f"{self.BASE_URL}{self.SEARCH_ENDPOINT}"
             params = {"query": query, "type": search_type}
             full_url = f"{search_url}?{urlencode(params)}"
 
@@ -101,61 +62,61 @@ class TeamcraftAPI:
     def get_status_info(self, status_name: str) -> Optional[Dict[str, Any]]:
         data = self._fetch_api_data(status_name, "Status")
         if not data:
-            self.save_to_json({"error": "No response from API", "query": status_name}, status_name, 'error')
+            save_to_json(self.ERROR_DIR, {"error": "No response from API", "query": status_name}, status_name, 'error', self.quiet)
             return None
 
-        self.save_to_json({
+        save_to_json(self.RAW_DIR, {
             "user_input": status_name,
             "timestamp": datetime.now().isoformat(),
             "raw_response": data
-        }, status_name, 'raw')
+        }, status_name, 'raw', self.quiet)
 
         status_data = self._handle_response(data)
         if status_data:
             processed_data = {
                 "processed_data": {
                     "name": status_data.get("en", status_name),
-                    "icon": self._extract_icon_number(status_data.get("icon", "")),
+                    "icon": extract_icon_number(status_data.get("icon", "")),
                     "type": status_data.get("type", ""),
                     "id": status_data.get("id", 0),
-                    "api_path": self._format_icon_path(status_data.get("icon", "")),
+                    "api_path": format_icon_path(status_data.get("icon", "")),
                     "description": status_data.get("description", {}).get("en", "")
                 }
             }
-            self.save_to_json(processed_data, status_name, 'processed')
+            save_to_json(self.PROCESSED_DIR, processed_data, status_name, 'processed', self.quiet)
             return processed_data["processed_data"]
 
-        self.save_to_json({"error": "No data found", "query": status_name}, status_name, 'error')
+        save_to_json(self.ERROR_DIR, {"error": "No data found", "query": status_name}, status_name, 'error', self.quiet)
         return None
 
     def get_action_info(self, name: str) -> Optional[Dict[str, Any]]:
         data = self._fetch_api_data(name, "Action")
         if not data:
-            self.save_to_json({"error": "No response from API", "query": name}, name, 'error')
+            save_to_json(self.ERROR_DIR, {"error": "No response from API", "query": name}, name, 'error', self.quiet)
             return None
 
-        self.save_to_json({
+        save_to_json(self.RAW_DIR, {
             "user_input": name,
             "timestamp": datetime.now().isoformat(),
             "raw_response": data
-        }, name, 'raw')
+        }, name, 'raw', self.quiet)
 
         action_data = self._handle_response(data)
         if action_data:
             processed_data = {
                 "processed_data": {
                     "name": action_data.get("en", name),
-                    "icon": self._extract_icon_number(action_data.get("icon", "")),
+                    "icon": extract_icon_number(action_data.get("icon", "")),
                     "type": "Action",
                     "id": action_data.get("id", 0),
-                    "api_path": self._format_icon_path(action_data.get("icon", "")),
+                    "api_path": format_icon_path(action_data.get("icon", "")),
                     "description": action_data.get("description", {}).get("en", "No description available")
                 }
             }
-            self.save_to_json(processed_data, name, 'processed')
+            save_to_json(self.PROCESSED_DIR, processed_data, name, 'processed', self.quiet)
             return processed_data["processed_data"]
 
-        self.save_to_json({"error": "No action data found", "query": name}, name, 'error')
+        save_to_json(self.ERROR_DIR, {"error": "No action data found", "query": name}, name, 'error', self.quiet)
         return None
 
     @staticmethod
@@ -214,39 +175,3 @@ class TeamcraftAPI:
                 print(f"  - {failed}")
 
         return results
-
-def main():
-    choice = input("Enter '1' for single status search or '2' for batch processing: ")
-
-    try:
-        if choice == '1':
-            api = TeamcraftAPI()
-            status_name = input("Enter the status name to search: ")
-            status_info = api.get_status_info(status_name)
-            if status_info:
-                logger.info(json.dumps(status_info, indent=4, ensure_ascii=False))
-            else:
-                logger.warning(f"No status data found for: {status_name}. Trying as action...")
-                action_info = api.get_action_info(status_name)
-                if action_info:
-                    logger.info(f"Found as action: {status_name}")
-                    logger.info(json.dumps(action_info, indent=4, ensure_ascii=False))
-                else:
-                    logger.error(f"No data found for status or action: {status_name}")
-
-        elif choice == '2':
-            filename = input("Enter the path to your status list file: ")
-            if not Path(filename).exists():
-                logger.error(f"File not found: {filename}")
-                return
-            api = TeamcraftAPI(quiet=True)
-            api.batch_process_status(filename)
-
-        else:
-            logger.error("Invalid choice. Please enter '1' or '2'.")
-
-    except Exception as e:
-        logger.error(f"An error occurred: {str(e)}", exc_info=True)
-
-if __name__ == "__main__":
-    main()

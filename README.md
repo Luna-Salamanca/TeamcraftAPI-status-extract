@@ -1,55 +1,85 @@
-# **Teamcraft API Fetcher**
+# 📘 About This Project
 
-## **Overview**
-This Python script interacts with the *Teamcraft API* to fetch information about status effects (buffs, debuffs, etc.) — and now also Actions if the status isn't found. It saves structured responses locally.
+This project is part of my personal learning journey into **advanced Python concepts** and **real-world software engineering practices**, including:
+
+- Structuring modular Python projects  
+- Writing unit tests and handling edge cases  
+- Working with external APIs
+- Managing data with file I/O and JSON  
+- Using GitHub for version control, collaboration, and documentation
+
+It serves as a sandbox to improve my skills in:
+- Clean architecture
+- Exception handling
+- Code maintainability
+- Git workflows and pull requests
+
+> I'm using this repository to **learn, iterate, and improve** through hands-on experience.
+
+# 🛠️ Teamcraft API Fetcher
+
+A modular Python CLI tool to fetch, process, and save data from the Teamcraft API.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+---
+
+## 📦 Installation
+```bash
+# Clone and install in editable mode
+pip install -e .
+```
+
 
 ---
 
-## **Features**
+## ✅ Features
 
 ✅ Fetches **Status** info from the Teamcraft API  
 ✅ Automatically falls back to **Action** if Status is not found  
-✅ Saves responses in structured folders (`raw/`, `processed/`, `errors/`, `batch/`)  
+✅ Saves responses in structured folders (`raw/`, `processed/`, `errors/`, `batch/`) or custom output folder via `--output`  
 ✅ Provides **xivapi** icon URL for easy embedding  
 ✅ Optional **quiet mode** for clean batch processing  
-✅ Uses `pathlib` and sanitized filenames for better cross-platform support  
+✅ Uses `pathlib` and sanitized filenames for cross-platform safety
 
 ---
 
-## **Requirements**
+## 🚀 Usage
 
-- **Python** `3.7+`
-- Install dependencies:
-  ```sh
-  pip install requests
-  ```
-
----
-
-## **Usage**
-
-### 🔹 Single Lookup
-
-```sh
-python main.py
-# Enter: 1
-# Then: Enter a status or action name like "Weakness" or "Interject"
+### 🔹 Single Lookup (Interactive)
+```bash
+python -m teamcraft_api --status "Interject"
 ```
 
 ### 🔹 Batch Lookup
-
-```sh
-python main.py
-# Enter: 2
-# Then: Enter the path to a list file (e.g., status_list.txt)
+```bash
+python -m teamcraft_api --batch ./data/status_list.txt
 ```
 
-Batch mode supports a quiet terminal experience and logs results in a summary file under `api_responses/batch`.
+### 🔹 Quiet Batch
+```bash
+python -m teamcraft_api --batch ./data/status_list.txt --quiet
+```
+
+### 🔹 Specify Output Directory
+```bash
+python -m teamcraft_api --status "Damage Up" --output ./custom_output/
+```
 
 ---
 
-## **Example CLI Output**
+## 📂 Directory Structure
+```
+api_responses/ or --output path
+├── raw/        ← full API responses
+├── processed/  ← cleaned status/action data
+├── errors/     ← failed lookups or exceptions
+└── batch/      ← batch run summaries
+```
 
+---
+
+## 📘 Example CLI Output
 ```
 INFO: Searching for status: Interject
 INFO: Not found as Status — trying Action instead...
@@ -59,73 +89,26 @@ INFO: Data saved to: api_responses/processed/000808_hr1_Interject_7538.json
 
 ---
 
-## **Directory Structure**
-
-```
-api_responses/
-├── raw/        ← full API responses
-├── processed/  ← cleaned status/action data
-├── errors/     ← failed lookups or exceptions
-└── batch/      ← batch run summaries
-```
-
----
-
-## **Example Outputs**
+## 📦 Example Outputs
 
 ### 🔸 Raw API Response (`raw/`)
-
 ```json
 {
-    "user_input": "Damage",
-    "request_url": "https://api.ffxivteamcraft.com/search?query=Damage&type=Status",
-    "timestamp": "2025-03-26T17:55:36.662413",
-    "raw_response": [
-        {
-            "en": "Damage Up",
-            "de": "Schaden +",
-            "ja": "ダメージ上昇",
-            "fr": "Bonus de dégâts",
-            "ko": "주는 피해량 증가",
-            "zh": "伤害提高",
-            "id": "61",
-            "icon": "/i/215000/215519.png",
-            "description": {
-                "en": "Damage dealt is increased.",
-                "de": "Ausgeteilter Schaden ist erhöht.",
-                "ja": "与ダメージが上昇した状態。",
-                "fr": "Les dégâts infligés sont augmentés.",
-                "ko": "적에게 주는 피해량이 증가하는 상태.",
-                "zh": "攻击所造成的伤害提高"
-            },
-            "type": "Status"
-        },
-        {
-            "en": "Damage Down",
-            "de": "Schaden -",
-            "ja": "ダメージ低下",
-            "fr": "Malus de dégâts",
-            "ko": "주는 피해량 감소",
-            "zh": "伤害降低",
-            "id": "62",
-            "icon": "/i/215000/215520.png",
-            "description": {
-                "en": "Damage dealt is reduced.",
-                "de": "Ausgeteilter Schaden ist verringert.",
-                "ja": "与ダメージが低下した状態。",
-                "fr": "Les dégâts infligés sont réduits.",
-                "ko": "적에게 주는 피해량이 감소하는 상태.",
-                "zh": "攻击所造成的伤害降低"
-            },
-            "type": "Status"
-        }
-        // More entries exist here...
-    ]
+  "user_input": "Damage",
+  "timestamp": "2025-03-26T17:55:36.662413",
+  "raw_response": [
+    {
+      "en": "Damage Up",
+      "id": "61",
+      "icon": "/i/215000/215519.png",
+      "description": { "en": "Damage dealt is increased." },
+      "type": "Status"
+    }
+  ]
 }
 ```
 
 ### 🔸 Processed Output (`processed/`)
-
 ```json
 {
   "processed_data": {
@@ -141,21 +124,18 @@ api_responses/
 
 ---
 
-## **Using the Icon URLs**
+## 🌐 Using the Icon URLs
 
 The processed `api_path` field gives you a usable image URL from XIVapi:
-
 ```
 https://xivapi.com/i/215000/215519.png
 ```
-
-You can use this directly in frontends, bots, or reports.
+Use it in frontends, bots, dashboards, or embedded UIs.
 
 ---
 
-## **status_list.txt Format**
-
-Each line should be one status or action name. Example:
+## 📄 status_list.txt Format
+Each line should be one status or action name. Comments (//) and blanks are ignored.
 ```
 Damage Up
 Down for the Count
@@ -163,24 +143,47 @@ Interject
 Magic Vulnerability Up
 ```
 
-Lines starting with `//` or empty lines will be ignored.
-
 ---
 
-## **Contributing**
+## ✅ Testing & Coverage
 
-Contributions are welcome! Feel free to:
+### 🔸 Windows
+```bash
+.\make.bat test       # Run all tests
+.\make.bat coverage   # Run tests with coverage report
+.\make.bat clean      # Clean cache and build artifacts
+```
+
+### 🔸 Linux/macOS
+```bash
+make test
+make coverage
+make clean
+```
+
+> Ensure you have a GNU Makefile if using Linux/macOS. See `make.bat` for equivalent commands.
+> Not tested on Linux/macOS yet.
+---
+
+## 🧪 Requirements
+- Python 3.7+
+- requests, pytest, pytest-cov, build
+Install all development dependencies with:
+```bash
+pip install -e ".[dev]"
+```
+---
+
+## 🤝 Contributing
 - Open issues for bugs or feature ideas
-- Submit a pull request with enhancements
+- Submit pull requests to enhance functionality
 
 ---
 
-## **License**
-
-MIT License — free to use, modify, and distribute.
-
----
-
-## **Author**
-
+## 👤 Author
 [Luna](https://github.com/Luna-Salamanca)
+
+---
+
+## 📄 License
+MIT — free to use, modify, and distribute.
